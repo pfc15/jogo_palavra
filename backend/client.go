@@ -18,22 +18,37 @@ type ClientList map[*Client]bool
 type Client struct {
 	connection *websocket.Conn
 	manager *Manager
-	sala string
+	sala *room
 	username string
 	palavras []string
 	ready bool
 	egress chan Event
 }
 
+type room struct {
+	nome string
+	clientes []*Client
+}
+
 func NewClient( conn *websocket.Conn, nickname string, sala string, manager *Manager) *Client {
-	return &Client{
+	new_room, exist := manager.rooms[sala]
+	if (!exist){
+		new_room = &room{
+			nome: sala,
+			clientes: make([]*Client, 0),
+		}
+		manager.rooms[sala] = new_room
+	}
+	novo_cliente := Client{
 		connection: conn,
 		manager: manager,
-		sala: sala,
+		sala: new_room,
 		username: nickname,
 		ready: false,
 		egress: make(chan Event),
 	}
+	new_room.clientes = append(new_room.clientes, &novo_cliente)
+	return &novo_cliente
 }
 
 func (c *Client) readMessage() {
