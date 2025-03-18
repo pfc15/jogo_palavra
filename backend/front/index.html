@@ -174,7 +174,7 @@
         function connect() {
             username = document.getElementById("username").value
             sala = document.getElementById("chatroom").value
-            conn = new WebSocket("wss://" + document.location.host + "/ws"+`?username=${username}&sala=${sala}`);
+            conn = new WebSocket("ws://" + document.location.host + "/ws"+`?username=${username}&sala=${sala}`);
             conn.onmessage = function(evt) {
                 const eventData = JSON.parse(evt.data);
                 last_evnt = eventData
