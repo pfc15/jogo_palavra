@@ -11,10 +11,8 @@ func SendMessage(event Event, c *Client) error {
 	fmt.Println(event)
 	fmt.Println(string(event.Payload))
 	event.Type = "new_message"
-	for client := range c.manager.clients {
-		if client.sala == c.sala {
-			client.egress <- event
-		}
+	for _, client := range c.sala.clientes {
+		client.egress <- event
 	}
 	return nil
 
@@ -32,24 +30,19 @@ func ReceberPalavras(event Event, c *Client) error {
 func ready(event Event, c *Client) error {
 	c.ready = true
 	all_clear := true
-	for client := range c.manager.clients {
-		if client.sala == c.sala {
-			if !client.ready{
-				all_clear = client.ready
-			}
+	for _,client := range c.sala.clientes {
+		if !client.ready{
+			all_clear = client.ready
 		}
 	}
 	if all_clear{
-		for client := range c.manager.clients {
-			if client.sala == c.sala {
-				var evento_resposta Event
-				evento_resposta = Event{
-					Type: "ready",
-					Payload: []byte(`"0;0"`),
-					Author: "server",
-				}
-				EnviarPartePalavra(evento_resposta, client)
+		for _, client := range c.sala.clientes {
+			evento_resposta := Event{
+				Type: "ready",
+				Payload: []byte(`"0;0"`),
+				Author: "server",
 			}
+			EnviarPartePalavra(evento_resposta, client)
 		}
 	}
 	
@@ -61,8 +54,8 @@ func EnviarPartePalavra(event Event, c *Client) error {
 	resposta := strings.Split(string(event.Payload)[1:len(string(event.Payload))-1], ";")
 	index_palavra, _ :=  strconv.Atoi(resposta[0])
 	index_letra, _ := strconv.Atoi(resposta[1])
-	for client := range c.manager.clients {
-		if client.sala == c.sala && client!=c {
+	for _, client := range c.sala.clientes {
+		if client!=c {
 			resposta := `"` +resposta[0]+";"+resposta[1]+";"+string(c.palavras[index_palavra][index_letra])+`"`
 			evento_resposta := Event{
 				Type: "dica",
@@ -84,8 +77,8 @@ func conferirPalavra(event Event, c *Client) error {
 	log.Println(index_palavra, index_letra, chute)
 	var evento_resposta Event
 	var adversario *Client
-	for client := range c.manager.clients {
-		if client.sala == c.sala && client!=c {
+	for _, client := range c.sala.clientes {
+		if client!=c {
 			adversario = client
 		}
 	}
@@ -130,12 +123,11 @@ func conferirPalavra(event Event, c *Client) error {
 		}
 	}
 
-	for client :=range c.manager.clients {
-		if client.sala == c.sala {
-				client.egress <- evento_resposta
-			}
-		}
-	
+	for _ , client :=range c.sala.clientes {
+		client.ready = false
+		client.palavras = make([]string, 0)
+		client.egress <- evento_resposta
+	}
 	return nil
 }
 
