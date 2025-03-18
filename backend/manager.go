@@ -14,10 +14,10 @@ import (
 
 type Manager struct {
 	// db *sql.DB
-	players []Player
 	sync.RWMutex
 	clients ClientList
 	handlers map[string]EventHandler
+	rooms map[string]*room
 }
 
 var (
@@ -36,6 +36,7 @@ func new_manager() *Manager {
 	m := &Manager{
 		clients: make(ClientList),
 		handlers: make(map[string]EventHandler),
+		rooms: make(map[string]*room, 0),
 	}
 	// m.setupDB()
 	m.setUpHandlers()
@@ -110,5 +111,10 @@ func (m *Manager) removeClient(client *Client) {
 	if _, ok := m.clients[client]; ok {
 		client.connection.Close()
 		delete(m.clients, client)
+		for index, c :=range(client.sala.clientes) {
+			if c==client {
+				client.sala.clientes = append(client.sala.clientes[:index], client.sala.clientes[index+1:]...)
+			}
+		}
 	}
 }
