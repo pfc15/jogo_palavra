@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Websockets</title>
+</head>
+<body>
+    <div class="center">
+        <h1>Chatyy</h1>
+        <h3 id="chat-header">
+            currently in chat: general
+        </h3>
+	<div>
+		<label>usuario: </label>
+		<input type=textarea for="username" placeholder="escreva seu nick d usuário" id="username"></input>
+        <label for="senha">senha: </label>
+        <input type="text" id=senha>
+        <input type="button" value="login" onclick="login()">
+        <input type="button" value="inscrever-se" onclick="signup()">
+	</div>	
+    <form id="chatroom-selection">
+        <label for="chatroom">Chatroom:</label>
+        <input type="text" id="chatroom">
+        <input type="button" value="connect" onclick=connect()>
+    </form>
+
+    <br>
+
+    <textarea class="messagearea" id="chatmessages" readonly name="chatmessages"
+    rows="4" cols="50" placeholder="Welcome to chatroom"></textarea>
+
+    <br>
+        <label for="message">Message: </label>
+        <input type="text" id="message" name="message">
+        <input type="button" value="Send message" id="s_message" onclick=sendMessage()>
+    </div>
+
+    <input type="text" id="p1">
+    <input type="text" id="p2">
+    <input type="text" id="p3">
+    <input type="text" id="p4">
+    <input type="text" id="p5">
+    <input type="button" value="enviar palavras" onclick=sendPalavras()>
+
+    <h2 id="ready">não pronto</h2>
+    <input type="button" value="ready" onclick=ready()>
+
+    <input type="text" id="chute" value="coloque seu chute aqui">
+    <input type="button" value="chute!" onclick="send_palpite()">
+
+    <h2>palavras</h2>
+    <ul id="lista_palavras">
+    </ul>
+
+
+    <script>
+        var selectedChat = 'general';
+        var username = "";
+        var index_palavra =-1;
+        var index_letra = -1;
+        var palavra = ""
+
+        class Event {
+            constructor(type, payload, username){
+                this.author = username;
+                this.type = type;
+                this.payload = payload;
+            }
+        }
+
+
+
+        function routeEvent(event){
+            if (event.type === undefined) {
+                alert("no type field");
+            }
+            console.log(event)
+            console.log(event.type)
+
+            switch(event.type) {
+                case"new_message":
+                    chat = document.getElementById("chatmessages")
+                    chat.value = chat.value+`${event.author}: ${event.payload}\n`
+                    chat.inne
+                    break;
+                case "ready":
+                    console.log(event.payload)
+                    if (event.payload === "not_clear"){
+                         document.getElementById("ready").textContent = "not ready"
+                    } else {
+                        document.getElementById("ready").textContent = event.payload[0]
+                    }
+                    break
+                case "dica":
+                    respostas = String(event.payload).split(";")
+                    console.log(respostas)
+                    if (index_palavra !== Number(respostas[0])){
+                        document.getElementById("lista_palavras").innerHTML+= `<li id=lp${index_palavra+1}>${respostas[2]}</li>`
+                        console.log("add mais um")
+                        palavra = respostas[2]
+                        if (index_letra!=-1) {
+                            document.getElementById(`lp${index_palavra}`).innerText = document.getElementById(`chute`).value
+                        }
+                    }else {
+                        palavra += respostas[2]
+                        document.getElementById(`lp${index_palavra}`).innerText = palavra
+                    }
+                    
+                    
+                    index_palavra = Number(respostas[0])
+                    index_letra = Number(respostas[1])
+                    document.getElementById("chute").value = palavra
+                    console.log(index_palavra, index_letra)
+                    break
+                case "veredito":
+                    respostas = String(event.payload).split(";")
+                    document.getElementById("chute").value = respostas[2]
+                    document.getElementById("ready").innerText = "ACABOU"
+                    break
+                default:
+                    alert("unsuported message type");
+                    break;
+            }
+        }
+
+        function sendEvent(eventName, payload) {
+            
+            const event = new Event(eventName, payload, username);
+
+            conn.send(JSON.stringify(event));
+        }
+
+        function  changeChatRoom() {
+            var newchat = document.getElementById("chatroom");
+            if (newchat!= null && newchat.value != selectedChat){
+                console.log(newchat);
+            }
+            return false;
+        }
+
+        function sendMessage() {
+            var newmessage = document.getElementById("message");
+            if (newmessage != null ){
+                sendEvent("send_message", newmessage.value);
+            }
+            return false;
+        }
+
+        function sendPalavras() {
+            var palavras = ""
+            palavras += document.getElementById("p1").value + ";"
+            palavras += document.getElementById("p2").value + ";"
+            palavras += document.getElementById("p3").value + ";"
+            palavras += document.getElementById("p4").value + ";"
+            palavras += document.getElementById("p5").value
+
+            sendEvent("palavras", palavras)
+        }
+
+        function send_palpite() {
+            sendEvent("chute", `${index_palavra};${index_letra};${document.getElementById("chute").value}`)
+        }
+
+        function ready() {
+            sendEvent("ready", "clear")
+        }
+
+        window.onload = function () {
+            document.getElementById("chatroom-selection").onsubmit = changeChatRoom
+        }
+        var conn
+        var last_evnt
+        function connect() {
+            username = document.getElementById("username").value
+            sala = document.getElementById("chatroom").value
+            conn = new WebSocket("wss://" + document.location.host + "/ws"+`?username=${username}&sala=${sala}`);
+            conn.onmessage = function(evt) {
+                const eventData = JSON.parse(evt.data);
+                last_evnt = eventData
+                event = new Event(eventData.type, eventData.payload , eventData.author)
+                routeEvent(event)
+            }
+        }
+
+        function signup() {
+            username = document.getElementById("username").value
+            senha = document.getElementById("senha").value
+            sendEvent("inscrever-se", senha)
+        }
+
+        function login() {
+            username = document.getElementById("username").value
+            senha = document.getElementById("senha").value
+            sendEvent("login", senha)
+        }
+        
+
+    </script>
+
+</body>
+</html>
