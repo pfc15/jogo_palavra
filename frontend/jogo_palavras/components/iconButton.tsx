@@ -15,10 +15,10 @@ interface IconButtonProps {
 const IconButton: React.FC<IconButtonProps> = ({ title, iconName, size, estiloIcone, onPress}) => {
     const buttonSize = Dimensions.get('window').width * size;
     return (
-        <TouchableOpacity style={[estiloIcone, {width: buttonSize, height: buttonSize, borderRadius: buttonSize / 2 }]} onPress={onPress}>
+        <TouchableOpacity style={[estiloIcone]} onPress={onPress}>
             
             
-            <Icon name={iconName} size={20} color="#fff" style={styles.icon} />
+            <Icon name={iconName} color="#fff" style={styles.icon} />
             
         </TouchableOpacity>
     )
