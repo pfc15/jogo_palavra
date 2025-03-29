@@ -4,6 +4,7 @@ import { useState } from 'react';
 import IconButton from "@/components/iconButton"
 import TextBubble from "@/components/textBubble"
 import { ScrollView } from 'react-native';
+import globals from '@/globals';
 // import global_network from "@/connection/globals"
 
 
@@ -23,6 +24,7 @@ export default function chatroom() {
         var hora_agr = new Date()
         setMessages([...messages, {id:"eu"+ hora_agr.toISOString(),author:"eu", msg:msg, hora:hora_agr}])
         console.log(messages)
+        setMsg("")
     }
 
     return (
@@ -34,7 +36,7 @@ export default function chatroom() {
             </ScrollView>
             <View style={{flexDirection: "row", marginTop:5}}>
             <TextInput style={styles.input} value={msg} onChangeText={setMsg}></TextInput>
-            <IconButton title={null} iconName="send" estiloIcone={styles.icon} size={0.05} onPress={sendText} />
+            <IconButton iconName="send" estiloIcone={styles.icon} size={0.05} onPress={sendText} text={""} />
             </View>
         </SafeAreaView>
     )
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     icon: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'blue',
+        backgroundColor: globals.accentColor,
         flex:1,
         margin:5,
     },
