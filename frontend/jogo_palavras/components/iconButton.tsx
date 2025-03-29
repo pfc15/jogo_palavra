@@ -1,24 +1,26 @@
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, Dimensions } from "react-native";
-
+import { View, TouchableOpacity, Text, StyleSheet, ViewStyle, Dimensions } from "react-native";
+import globals from "@/globals"
 
 interface IconButtonProps {
-    title: string|null;
     iconName: string;
     size: number;
     estiloIcone: ViewStyle;
+    text: string|null;
     onPress: () => void;
   }
   
 //  
-const IconButton: React.FC<IconButtonProps> = ({ title, iconName, size, estiloIcone, onPress}) => {
+const IconButton: React.FC<IconButtonProps> = ({ iconName, size, estiloIcone, onPress, text=null}) => {
     const buttonSize = Dimensions.get('window').width * size;
     return (
-        <TouchableOpacity style={[estiloIcone]} onPress={onPress}>
-            
-            
-            <Icon name={iconName} color="#fff" style={styles.icon} />
+        <TouchableOpacity style={[estiloIcone, {overflow:'hidden'}]} onPress={onPress}>
+            <View style={{alignItems:'center'}}>{text===""?null:
+                <Text style={styles.buttonText}>{text}</Text>
+            }
+            <Icon name={iconName} color='black' style={styles.icon} />
+            </View>
             
         </TouchableOpacity>
     )
@@ -29,8 +31,10 @@ const styles = StyleSheet.create({
         margin:5,
     },
     buttonText: {
-        color: "#fff",
+        color: 'black',
         fontSize: 16,
+        margin: 7,
+        marginBottom: 3,
     },
 
 });
