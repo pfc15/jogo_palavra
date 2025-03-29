@@ -1,6 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TextInput, StyleSheet, Button, View } from "react-native";
 import { useState } from 'react';
+import MyStatusBar from '@/components/MyStatusBar';
 import IconButton from "@/components/iconButton"
 import TextBubble from "@/components/textBubble"
 import { ScrollView } from 'react-native';
@@ -29,6 +30,7 @@ export default function chatroom() {
 
     return (
         <SafeAreaView style={styles.SafeAreaView}>
+            <MyStatusBar/>
             <ScrollView style={styles.chatText}>
                 {messages!=null? messages.map((element) => (
                     <TextBubble key={element.id} author={element.author} mensagem={element.msg} send={true} hora={element.hora} received={false}/>

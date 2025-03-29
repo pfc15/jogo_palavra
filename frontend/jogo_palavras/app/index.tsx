@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import global_network from "@/connection/globals";
 import connection from "@/connection/connection";
+import MyStatusBar from "@/components/MyStatusBar";
 import { useRouter } from "expo-router"; 
 
 import { Text, ActivityIndicator, Button, StyleSheet, TextInput } from 'react-native';
@@ -36,6 +37,7 @@ export default function NewPage() {
     return (
         
         <SafeAreaView style={styles.tela}>
+            <MyStatusBar/>
             <Text style={styles.title}>Nova página de teste</Text>
 
             <Text style={styles.label}>Username</Text>

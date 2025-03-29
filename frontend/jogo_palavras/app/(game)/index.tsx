@@ -4,9 +4,6 @@ import IconButton from "@/components/iconButton"
 import globals from "@/globals"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-const STYLES = ['default', 'dark-content', 'light-content'] as const;
-const TRANSITIONS = ['fade', 'slide', 'none'] as const
-
 
 export default function() {
     const [sentPalavra, setSentPalavra] = useState<boolean>(true)
