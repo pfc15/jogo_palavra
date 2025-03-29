@@ -1,14 +1,20 @@
+import globals from '@/globals';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+import { useColorScheme } from "react-native";
+import { Stack, Tabs } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 
 export default function TabLayout() {
+    const theme = useColorScheme(); // Returns "light" or "dark"
+    
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' , headerShown:false}}>
+    <ThemeProvider value={theme==="dark" ? DarkTheme:DefaultTheme}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: globals.accentColor , headerShown:false}}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'game',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="gamepad" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -19,5 +25,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </ThemeProvider>
   );
 }
