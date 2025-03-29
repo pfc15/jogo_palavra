@@ -30,11 +30,6 @@ export default function RootLayout() {
     screenOptions={{headerShown:false}}
       >
     <Stack.Screen
-        name="home"
-        options={{headerShown: false}}
-
-    />
-    <Stack.Screen
         name="(game)"
         options={{headerShown:false}}
     />
