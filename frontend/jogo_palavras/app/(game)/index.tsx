@@ -32,6 +32,7 @@ export default function() {
                 backgroundColor='black'
                 hidden={false}
             />
+        <Text style={styles.title}>Coloque as suas 5 palavras e comece a jogar!</Text>
         <Text style={styles.label}>palavra 1</Text>
         <TextInput value={palavras[0]} 
         onChangeText={(newText) =>setIndexPalavra(newText, 0)}
@@ -103,6 +104,14 @@ const styles = StyleSheet.create({
         margin: 10,
         height: 40,
         width:'70%',
+    },
+    title: {
+        fontSize: 40,
+        textAlign: 'center',
+        marginBottom: 25,
+        padding: 7,
+        backgroundColor: globals.accentColor,
+        borderRadius: 10
     },
     text: {
         color: 'white'
