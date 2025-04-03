@@ -7,6 +7,7 @@ class connection {
         this.sala = sala
         this.url =url
         this.conn = this.connect()
+        this.eventHandler = {}
     }
 
     connect() {
@@ -40,22 +41,20 @@ class connection {
         
     }
 
+    on(eventType, handler) {
+        this.eventHandler[eventType] = handler;
+    }
+
     routeEvent(event) {
         if (event.type === undefined) {
             console.error("no type field");
         }
 
-        switch(event.type) {
-            case "new_message":
-                break;
-            case "ready":
-                break;
-            case "dica":
-                break;
-            case "veredito":
-                break;
-            default:
-                break;
+        const handler = this.eventHandler[event.type]
+        if (handler) {
+            handler(event.payload, event.author)
+        } else {
+            console.warn(`Sem função handler para o tipo de evento: ${event.type}`)
         }
     }
 }
