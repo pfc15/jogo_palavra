@@ -11,6 +11,13 @@ export default function TabLayout() {
     <ThemeProvider value={theme==="dark" ? DarkTheme:DefaultTheme}>
     <Tabs screenOptions={{ tabBarActiveTintColor: globals.accentColor , headerShown:false}}>
       <Tabs.Screen
+      name="lobby"
+      options={{
+        title: "lobby",
+        tabBarIcon: ({ color }) => <FontAwesome size={28} name="users" color={color} />,
+      }}
+    />
+    <Tabs.Screen
         name="index"
         options={{
           title: 'game',
@@ -18,12 +25,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="chat_room"
+        name="chat"
         options={{
           title: "chat",
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="comment" color={color} />,
         }}
       />
+      
     </Tabs>
     </ThemeProvider>
   );
