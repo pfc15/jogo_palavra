@@ -6,7 +6,7 @@ interface TextBubbleProps {
     author: string,
     mensagem: string,
     send: boolean,
-    hora: Date,
+    hora: string,
     received: boolean
   }
   
@@ -17,7 +17,7 @@ const TextBubble: React.FC<TextBubbleProps> = ({ author, mensagem, send, hora, r
         <View style={styles.container}>
             <Text style={styles.author}> {author}</Text>
             <Text style={styles.mensagem}> {mensagem}</Text>
-            <Text style={styles.data}>{hora.toISOString()}{send?"  enviou!":null}</Text>
+            <Text style={styles.data}>{hora}{send?"  enviou!":null}</Text>
         </View>
     )
 }

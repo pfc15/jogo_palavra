@@ -14,7 +14,7 @@ type Message = {
     id: string,
     author: string,
     msg: string,
-    hora: Date,
+    hora: string,
     send: boolean,
     received: boolean
 }
@@ -24,10 +24,9 @@ export default function chatroom() {
     const [messages, setMessages] = useState<Message[]>([])
 
     function receiveText(payload:any, author:string|undefined) {
-        var hora_agr = new Date()
         if (global_network.network) {
-            setMessages([...messages, {id:author+hora_agr.toISOString(), author:author?author:"desconhecido", 
-                msg: payload, hora:hora_agr, send:true, received:true 
+            setMessages([...messages, {id:author+""+messages.length, author:author?author:"desconhecido", 
+                msg: payload, hora:globals.currentTime(), send:true, received:true 
             }])
         }
     }
@@ -36,7 +35,7 @@ export default function chatroom() {
 
     function sendText() {
         var hora_agr = new Date()
-        setMessages([...messages, {id:"eu"+ hora_agr.toISOString(),author:"eu", msg:msg, hora:hora_agr, send:true, received:false}])
+        setMessages([...messages, {id:"eu"+""+messages.length,author:"eu", msg:msg, hora:globals.currentTime(), send:true, received:false}])
         console.log(messages)
         global_network.network?.sendMessage("send_message", msg)
         setMsg("")
