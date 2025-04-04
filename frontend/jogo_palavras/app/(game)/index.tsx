@@ -1,14 +1,30 @@
 import { useState } from "react"
-import {Text, StyleSheet, TextInput, View, StatusBar, StatusBarStyle} from "react-native"
+import {Text, StyleSheet, TextInput, View, StatusBar, StatusBarStyle, Button} from "react-native"
 import IconButton from "@/components/iconButton"
 import globals from "@/globals"
+import global_network from "@/connection/globals"
+import Event from "@/connection/event"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 
 export default function() {
     const [sentPalavra, setSentPalavra] = useState<boolean>(true)
     const [palavras, setPalavras] = useState<string[]>(Array(5).fill(""))
-
+    
+    function teste(){
+        if (global_network.network){
+            var msg = new Event(
+                "send_message",
+                "ola mundo",
+                "eu"
+            )
+            global_network.network.conn?.send(JSON.stringify(msg))
+            console.log(msg, typeof(global_network.network.conn), global_network.network)
+            global_network.network?.sendMessage("send_message", "ola mundo")
+        }else {
+            console.log("no connection")
+        }
+    }
 
     function setIndexPalavra(text:string, index:number) {
         var aux = [...palavras]
@@ -65,6 +81,7 @@ export default function() {
             onPress={sendPalavra}
             text={"enviar Palavras"}
         />
+        <Button onPress={teste} title="teste"/>
         </SafeAreaView>)
         :(<View style={styles.view}>
             <Text style={styles.text}>adeus mundo</Text>
