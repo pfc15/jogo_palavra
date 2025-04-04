@@ -5,3 +5,5 @@ class Event {
         this.payload = payload;
     }
 }
+
+export default Event
