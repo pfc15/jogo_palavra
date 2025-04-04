@@ -18,7 +18,7 @@ export default function NewPage() {
         try {
             setLoading(false)
             global_network.network = new connection(username, room, global_network.ip)
-            console.log(`username: ${username}, room: ${room},password: ${password}, `)
+            console.log(`username: ${username}, room: ${room},password: ${password}, conn: ${global_network.network.conn}`)
             router.navigate("../(game)")
         }catch (error) {
             console.error(error)
