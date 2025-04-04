@@ -6,25 +6,39 @@ import IconButton from "@/components/iconButton"
 import TextBubble from "@/components/textBubble"
 import { ScrollView } from 'react-native';
 import globals from '@/globals';
-// import global_network from "@/connection/globals"
+import global_network from "@/connection/globals";
+import Event from '@/connection/event';
 
 
 type Message = {
     id: string,
     author: string,
     msg: string,
-    hora: Date
+    hora: Date,
+    send: boolean,
+    received: boolean
 }
 
 export default function chatroom() {
     const [msg, setMsg] = useState("")
     const [messages, setMessages] = useState<Message[]>([])
 
+    function receiveText(payload:any, author:string|undefined) {
+        var hora_agr = new Date()
+        if (global_network.network) {
+            setMessages([...messages, {id:author+hora_agr.toISOString(), author:author?author:"desconhecido", 
+                msg: payload, hora:hora_agr, send:true, received:true 
+            }])
+        }
+    }
+    global_network.network?.on("new_message", receiveText)
+
 
     function sendText() {
         var hora_agr = new Date()
-        setMessages([...messages, {id:"eu"+ hora_agr.toISOString(),author:"eu", msg:msg, hora:hora_agr}])
+        setMessages([...messages, {id:"eu"+ hora_agr.toISOString(),author:"eu", msg:msg, hora:hora_agr, send:true, received:false}])
         console.log(messages)
+        global_network.network?.sendMessage("send_message", msg)
         setMsg("")
     }
 
@@ -33,7 +47,7 @@ export default function chatroom() {
             <MyStatusBar/>
             <ScrollView style={styles.chatText}>
                 {messages!=null? messages.map((element) => (
-                    <TextBubble key={element.id} author={element.author} mensagem={element.msg} send={true} hora={element.hora} received={false}/>
+                    <TextBubble key={element.id} author={element.author} mensagem={element.msg} send={element.send} hora={element.hora} received={element.received}/>
 )):null}
             </ScrollView>
             <View style={{flexDirection: "row", marginTop:5}}>
