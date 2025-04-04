@@ -34,9 +34,7 @@ export default function chatroom() {
 
 
     function sendText() {
-        var hora_agr = new Date()
         setMessages([...messages, {id:"eu"+""+messages.length,author:"eu", msg:msg, hora:globals.currentTime(), send:true, received:false}])
-        console.log(messages)
         global_network.network?.sendMessage("send_message", msg)
         setMsg("")
     }
