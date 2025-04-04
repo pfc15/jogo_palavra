@@ -76,9 +76,9 @@ class connection {
 
     sendMessage(eventType:string ,message:string){
         var msg = new Event(
-            "eu",            
             eventType,
-            message
+            message,
+            this.username
         )
 
         this.conn?.send(JSON.stringify(msg))

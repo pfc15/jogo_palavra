@@ -13,13 +13,6 @@ export default function() {
     
     function teste(){
         if (global_network.network){
-            var msg = new Event(
-                "send_message",
-                "ola mundo",
-                "eu"
-            )
-            global_network.network.conn?.send(JSON.stringify(msg))
-            console.log(msg, typeof(global_network.network.conn), global_network.network)
             global_network.network?.sendMessage("send_message", "ola mundo")
         }else {
             console.log("no connection")
