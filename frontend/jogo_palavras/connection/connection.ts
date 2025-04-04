@@ -3,7 +3,7 @@ import Event from '@/connection/event';
 type EventHandler = (payload: any, author?: string) => void;
 
 class connection {
-    private username: string;
+    public username: string;
     private sala: string;
     private url: string;
     public conn: WebSocket | null = null;
@@ -43,7 +43,9 @@ class connection {
 
             conn.onclose = () => {
                 this.connected = false
+                this.conn = null
                 console.log("conexão fechada")
+                this.connect()
             }
             this.conn = conn
         } catch (error) {
