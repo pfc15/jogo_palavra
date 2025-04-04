@@ -12,7 +12,9 @@ func SendMessage(event Event, c *Client) error {
 	fmt.Println(string(event.Payload))
 	event.Type = "new_message"
 	for _, client := range c.sala.clientes {
-		client.egress <- event
+		if client!= c{
+			client.egress <- event
+		}
 	}
 	return nil
 
