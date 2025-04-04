@@ -28,6 +28,8 @@ export default function() {
     function sendPalavra() {
         console.log('oi', palavras)
         setSentPalavra(!sentPalavra)
+        var payload = palavras.join(";")
+        global_network.network?.sendMessage("palavras", payload)
     }
 
     function volta(){
