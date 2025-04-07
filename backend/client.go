@@ -13,6 +13,12 @@ var (
 	pingInterval = (pongWait*9)/10
 )
 
+type ClientInterface interface{
+	readMessage()
+	writeMessage()
+	pongHandler(pongMsg string) error
+}
+
 type ClientList map[*Client]bool
 
 type Client struct {
@@ -30,7 +36,12 @@ type room struct {
 	clientes []*Client
 }
 
-func NewClient( conn *websocket.Conn, nickname string, sala string, manager *Manager) *Client {
+type factoryClientInterface interface {
+	NewClient(conn *websocket.Conn, nickname string, sala string, manager *Manager) *Client
+}
+type factoryClient struct{}
+
+func (n *factoryClient) NewClient( conn *websocket.Conn, nickname string, sala string, manager *Manager) *Client {
 	new_room, exist := manager.rooms[sala]
 	if (!exist){
 		new_room = &room{
