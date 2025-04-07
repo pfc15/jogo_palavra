@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	manager := new_manager()
+	factory := factoryManager{}
+	manager := factory.new_manager()
 	http.Handle("/", http.FileServer(http.Dir("./front")))
     http.HandleFunc("/ws", manager.serverWS)
 
