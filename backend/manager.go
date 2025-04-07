@@ -12,6 +12,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type ManagerInterface interface{
+	setUpHandlers()
+	routeEvent(event Event, c *Client) error
+	serverWS(w http.ResponseWriter, r *http.Request)
+	addClient(client *Client)
+	removeClient(client *Client)
+}
+
 type Manager struct {
 	// db *sql.DB
 	sync.RWMutex
@@ -27,7 +35,13 @@ var (
 	}
 )
 
-func new_manager() *Manager {
+type factoryManagerInterface interface{
+	new_manager() *Manager
+}
+
+type factoryManager struct {}
+
+func (f *factoryManager)new_manager() *Manager {
 	// db, err := sql.Open("sqlite3", "mydb.db")
 	// if err!=nil {
 	// 	log.Println("erro na leitura do banco de dados")
@@ -44,11 +58,12 @@ func new_manager() *Manager {
 }
 
 func (m *Manager) setUpHandlers() {
-	m.handlers[EventSendMessage] = SendMessage
-	m.handlers[EventPalavras] = ReceberPalavras
-	m.handlers[EventReady] = ready
-	m.handlers[EventDica] = EnviarPartePalavra
-	m.handlers[EventChute] = conferirPalavra
+	eventManager := EventHandlerManager{}
+	m.handlers[EventSendMessage] = eventManager.SendMessage
+	m.handlers[EventPalavras] = eventManager.ReceberPalavras
+	m.handlers[EventReady] = eventManager.ready
+	m.handlers[EventDica] = eventManager.EnviarPartePalavra
+	m.handlers[EventChute] = eventManager.conferirPalavra
 }
 
 
@@ -89,7 +104,8 @@ func (m *Manager) serverWS(w http.ResponseWriter, r *http.Request) {
 	username := string(r.URL.Query().Get("username"))
 	sala := string(r.URL.Query().Get("sala"))
 
-	client := NewClient(conn, username, sala, m)
+	factory := factoryClient{}
+	client := factory.NewClient(conn, username, sala, m)
 
 	m.addClient(client)
 
