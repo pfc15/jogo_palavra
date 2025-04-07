@@ -7,7 +7,17 @@ import (
 	"strings"
 )
 
-func SendMessage(event Event, c *Client) error {
+type EventInterface interface{
+	SendMessage(c *Client) error
+	ReceberPalavras(c *Client) error
+	ready(c *Client) error
+	EnviarPartePalavra(c *Client) error
+	conferirPalavra(c *Client) error
+}
+
+type EventHandlerManager struct{}
+
+func (e EventHandlerManager) SendMessage(event Event, c *Client) error {
 	fmt.Println(event)
 	fmt.Println(string(event.Payload))
 	event.Type = "new_message"
@@ -20,7 +30,7 @@ func SendMessage(event Event, c *Client) error {
 
 }
 
-func ReceberPalavras(event Event, c *Client) error {
+func (e EventHandlerManager) ReceberPalavras(event Event, c *Client) error {
 	c.palavras = strings.Split(string(event.Payload[1:len(event.Payload)-1]), ";")
 	log.Println(c.palavras)
 	for _, p :=range c.palavras {
@@ -29,7 +39,7 @@ func ReceberPalavras(event Event, c *Client) error {
 	return nil
 }
 
-func ready(event Event, c *Client) error {
+func (e EventHandlerManager) ready(event Event, c *Client) error {
 	c.ready = true
 	all_clear := true
 	for _,client := range c.sala.clientes {
@@ -44,14 +54,15 @@ func ready(event Event, c *Client) error {
 				Payload: []byte(`"0;0"`),
 				Author: "server",
 			}
-			EnviarPartePalavra(evento_resposta, client)
+			eventManager := EventHandlerManager{}
+			eventManager.EnviarPartePalavra(evento_resposta, client)
 		}
 	}
 	
 	return nil
 }
 
-func EnviarPartePalavra(event Event, c *Client) error {
+func (e EventHandlerManager) EnviarPartePalavra(event Event, c *Client) error {
 	log.Println(string(event.Payload)[1:len(string(event.Payload))-1])
 	resposta := strings.Split(string(event.Payload)[1:len(string(event.Payload))-1], ";")
 	index_palavra, _ :=  strconv.Atoi(resposta[0])
@@ -70,7 +81,7 @@ func EnviarPartePalavra(event Event, c *Client) error {
 	return nil
 }
 
-func conferirPalavra(event Event, c *Client) error {
+func (e EventHandlerManager) conferirPalavra(event Event, c *Client) error {
 	log.Println(string(event.Payload))
 	resposta := strings.Split(string(event.Payload)[1:len(string(event.Payload))-1], ";")
 	index_palavra, _ :=  strconv.Atoi(resposta[0])
@@ -91,7 +102,8 @@ func conferirPalavra(event Event, c *Client) error {
 			envio := `"`+ strconv.Itoa(index_palavra+1)+";0"+`"`
 			event.Payload = []byte(envio)
 			log.Println(string(event.Payload))
-			EnviarPartePalavra(event, adversario)
+			eventManager := EventHandlerManager{}
+			eventManager.EnviarPartePalavra(event, adversario)
 			return nil
 		} else {
 			evento_resposta = Event {
@@ -106,7 +118,8 @@ func conferirPalavra(event Event, c *Client) error {
 			if (index_palavra+1)>= len(adversario.palavras){
 				envio := `"`+strconv.Itoa(index_palavra+1)+";0"+`"`
 				event.Payload = []byte(envio)
-				EnviarPartePalavra(event, adversario)
+				eventManager := EventHandlerManager{}
+				eventManager.EnviarPartePalavra(event, adversario)
 				return nil
 			} else {
 				evento_resposta = Event {
@@ -120,7 +133,8 @@ func conferirPalavra(event Event, c *Client) error {
 			envio := `"`+ strconv.Itoa(index_palavra)+";"+strconv.Itoa(index_letra+1)+`"`
 			event.Payload = []byte(envio)
 			log.Println(envio)
-			EnviarPartePalavra(event, adversario)
+			eventManager := EventHandlerManager{}
+			eventManager.EnviarPartePalavra(event, adversario)
 			return nil
 		}
 	}
