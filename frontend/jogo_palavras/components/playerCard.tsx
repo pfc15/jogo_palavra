@@ -22,7 +22,7 @@ const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path
     return (
         <View style={{ marginBottom: isMenuVisible ? 0 : 8 }}>
         <TouchableOpacity style={styles.container} onPress={toggleMenu}>
-            <UserIcon source={image_path} estilo={styles.image}/>
+            <UserIcon isOnline={true} source={image_path} estilo={styles.image}/>
             <Text style={styles.nickname}>{nickname}</Text>
             <View style={styles.points}>
                 <Icon name="trophy" color='black'style={{margin:5, fontSize:30}}/>
