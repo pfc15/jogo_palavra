@@ -37,7 +37,7 @@ type room struct {
 }
 
 type factoryClientInterface interface {
-	NewClient(conn *websocket.Conn, nickname string, sala string, manager *Manager) *Client
+	NewClient(conn *websocket.Conn, nickname string, sala string, manager *ManagerInterface) *Client
 }
 type factoryClient struct{}
 
@@ -81,7 +81,7 @@ func (c *Client) readMessage() {
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Println("error reading message: %v", err)
+				log.Printf("error reading message: %v\n", err)
 			}
 			break
 		}
@@ -89,7 +89,7 @@ func (c *Client) readMessage() {
 		var request Event
 
 		if err := json.Unmarshal(payload, &request); err != nil {
-			log.Println("error marshaling event :%v", err)
+			log.Printf("error marshaling event :%v\n", err)
 		}
 
 		if err := c.manager.routeEvent(request, c); err != nil {
