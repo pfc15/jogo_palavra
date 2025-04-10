@@ -1,5 +1,5 @@
-import { useState } from "react"
-import {Text, StyleSheet, TextInput, View, StatusBar, StatusBarStyle, Button} from "react-native"
+import { useEffect, useState } from "react"
+import {Text, StyleSheet, TextInput, View, StatusBar, StatusBarStyle, Button, ScrollView} from "react-native"
 import IconButton from "@/components/iconButton"
 import globals from "@/globals"
 import global_network from "@/connection/globals"
@@ -8,37 +8,47 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 
 export default function() {
-    const [sentPalavra, setSentPalavra] = useState<boolean>(true)
     const [palavras, setPalavras] = useState<string[]>(Array(5).fill(""))
-    
+    const [isPlaying, setIsPlaying] = useState<boolean>(false)
+    var index_palavra = 0
+    var index_letra = 0
+    var chute_palavra = ""
+
+
+
+    function receivePalavra(payload: string, author: string|undefined) {
+        var respostas = payload.split(";")
+        if (index_palavra!== Number(respostas[0])) {
+            var aux = [...palavras]
+            aux[index_palavra+1] = respostas[2]
+            setPalavras(aux)
+            chute_palavra = respostas[2]
+        } 
+    }
+
     function teste(){
-        if (global_network.network){
-            global_network.network?.sendMessage("send_message", "ola mundo")
-        }else {
-            console.log("no connection")
-        }
+        console.log(isPlaying)
     }
 
     function setIndexPalavra(text:string, index:number) {
-        var aux = [...palavras]
-        aux[index] = text
-        setPalavras(aux)
+        if ((!isPlaying) || (index ===index_palavra && text.slice(0,index_letra) == chute_palavra)){
+            var aux = [...palavras]
+            aux[index] = text
+            setPalavras(aux)
+        }
+        
     }
 
     function sendPalavra() {
-        console.log('oi', palavras)
-        setSentPalavra(!sentPalavra)
         var payload = palavras.join(";")
         global_network.network?.sendMessage("palavras", payload)
+        setPalavras(["","","","",""])
+        setIsPlaying(true)
     }
 
-    function volta(){
-        setSentPalavra(!sentPalavra)
-    }
+
     return (
-        <>{ sentPalavra ? 
-        (
-        <SafeAreaView style={styles.view}>
+        <ScrollView contentContainerStyle={styles.view}>
             <StatusBar
                 backgroundColor='black'
                 hidden={false}
@@ -50,12 +60,12 @@ export default function() {
         style={styles.input}
         />
         <Text style={styles.label}>palavra 2</Text>
-        <TextInput value={palavras[1]} 
+        <TextInput value={palavras[1]}
         onChangeText={(newText) =>setIndexPalavra(newText, 1)}
         style={styles.input}
         />
         <Text style={styles.label}>palavra 3</Text>
-        <TextInput value={palavras[2]} 
+        <TextInput value={palavras[2]}
         onChangeText={(newText) =>setIndexPalavra(newText, 2)}
         style={styles.input}
         />
@@ -77,24 +87,14 @@ export default function() {
             text={"enviar Palavras"}
         />
         <Button onPress={teste} title="teste"/>
-        </SafeAreaView>)
-        :(<View style={styles.view}>
-            <Text style={styles.text}>adeus mundo</Text>
-        <IconButton
-            iconName="send"
-            size={0.05}
-            estiloIcone={styles.button}
-            onPress={volta}
-            text={"enviar Palavras"}
-        /></View>)
-        }</>
+        </ScrollView>
     )
 }
 
 
 const styles = StyleSheet.create({
     view: {
-        flex:1,
+        flexGrow:1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'black'
