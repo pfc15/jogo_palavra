@@ -9,9 +9,10 @@ interface playerCardInterface {
     points: number,
     image_path: string,
     palavras: string[],
+    isOnline: boolean
 }
 
-const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path, palavras}) => {
+const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path, palavras, isOnline}) => {
     const [isMenuVisible, setisMenuVisible] = useState(false)
 
     const toggleMenu = () =>{
@@ -22,7 +23,7 @@ const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path
     return (
         <View style={{ marginBottom: isMenuVisible ? 0 : 8 }}>
         <TouchableOpacity style={styles.container} onPress={toggleMenu}>
-            <UserIcon isOnline={true} source={image_path} estilo={styles.image}/>
+            <UserIcon isOnline={isOnline} source={image_path} estilo={styles.image}/>
             <Text style={styles.nickname}>{nickname}</Text>
             <View style={styles.points}>
                 <Icon name="trophy" color='black'style={{margin:5, fontSize:30}}/>

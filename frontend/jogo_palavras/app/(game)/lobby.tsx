@@ -8,21 +8,25 @@ export default function() {
             <PlayerCard nickname="testador" 
                 image_path={"/home/pfc15/Documents/aleatorio/jogo_palavra/frontend/jogo_palavras/assets/images/favicon.png"}
                 points={0}
+                isOnline={false}
                 palavras={["", "", ""]}
             />
             <PlayerCard nickname="testador" 
                 image_path={"/home/pfc15/Documents/aleatorio/jogo_palavra/frontend/jogo_palavras/assets/images/favicon.png"}
                 points={0}
+                isOnline={true}
                 palavras={["", "", ""]}
             /><PlayerCard nickname="testador" 
                 image_path={"/home/pfc15/Documents/aleatorio/jogo_palavra/frontend/jogo_palavras/assets/images/favicon.png"}
                 points={0}
+                isOnline={false}
                 palavras={["", "", ""]}
             />
             <PlayerCard nickname="testador" 
                 image_path={"/home/pfc15/Documents/aleatorio/jogo_palavra/frontend/jogo_palavras/assets/images/favicon.png"}
                 points={0}
                 palavras={["", "", ""]}
+                isOnline={true}
             />
         </SafeAreaView>
     )

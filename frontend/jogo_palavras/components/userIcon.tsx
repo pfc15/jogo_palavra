@@ -21,11 +21,10 @@ const UserIcon: React.FC<userIconInterface> = ({source, isOnline, estilo=null, s
           style={[{ width: size, height: size, borderRadius: size / 2 }]}
           />
           </View>
-          {isOnline &&
             <View
-                style={styles.ponto_online}
+                style={isOnline?styles.ponto_online:styles.ponto_desconectado}
             />
-          }
+          
         </View>
     )
 }
@@ -51,6 +50,18 @@ const styles = StyleSheet.create({
         borderColor:'#4CAF50',
         backgroundColor:'#4CAF50'
     },
+
+    ponto_desconectado: {
+        position:'absolute',
+        right:0,
+        bottom:0,
+        width: 12,
+        height:12,
+        borderRadius:12,
+        borderWidth:2,
+        borderColor:'#F44336',
+        backgroundColor:'#F44336'
+    }
   });
 
 export default UserIcon
