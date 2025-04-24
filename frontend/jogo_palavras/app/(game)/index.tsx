@@ -54,31 +54,20 @@ export default function() {
                 hidden={false}
             />
         <Text style={styles.title}>Coloque as suas 5 palavras e comece a jogar!</Text>
-        <Text style={styles.label}>palavra 1</Text>
-        <TextInput value={palavras[0]} 
-        onChangeText={(newText) =>setIndexPalavra(newText, 0)}
-        style={styles.input}
-        />
-        <Text style={styles.label}>palavra 2</Text>
-        <TextInput value={palavras[1]}
-        onChangeText={(newText) =>setIndexPalavra(newText, 1)}
-        style={styles.input}
-        />
-        <Text style={styles.label}>palavra 3</Text>
-        <TextInput value={palavras[2]}
-        onChangeText={(newText) =>setIndexPalavra(newText, 2)}
-        style={styles.input}
-        />
-        <Text style={styles.label}>palavra 4</Text>
-        <TextInput value={palavras[3]}
-        onChangeText={(newText) =>setIndexPalavra(newText, 3)}
-        style={styles.input}
-        />
-        <Text style={styles.label}>palavra 5</Text>
-        <TextInput value={palavras[4]} 
-        onChangeText={(newText) =>setIndexPalavra(newText, 4)}
-        style={styles.input}
-        />
+
+        {
+            [...Array(5).keys()].map(i =>(
+                <View style={styles.input_view}>
+                    <Text style={styles.label}> palavra {i}</Text>
+                    <TextInput 
+                        key={i}
+                        value={palavras[i]}
+                        onChangeText={(newText) => setIndexPalavra(newText, i)}
+                        style={styles.input}
+                    />
+                </View>
+            ))
+        }
         <IconButton
             iconName="send"
             size={0.05}
@@ -107,6 +96,10 @@ const styles = StyleSheet.create({
         backgroundColor: globals.accentColor,
         margin: 10,
         borderRadius: 10,
+    },
+    input_view: {
+        alignItems: 'center',
+        width:'85%'
     },
     input: {
         borderColor: globals.accentColor,
