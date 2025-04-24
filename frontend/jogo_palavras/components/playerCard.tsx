@@ -16,7 +16,6 @@ const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path
     const [isMenuVisible, setisMenuVisible] = useState(false)
 
     const toggleMenu = () =>{
-        console.log("clicou", isMenuVisible)
         setisMenuVisible(!isMenuVisible)
     }
     
@@ -36,6 +35,8 @@ const PlayerCard: React.FC<playerCardInterface> = ({nickname, points, image_path
                 <Text style={styles.palavras_dropdown}>1: {palavras[0]}</Text>
                 <Text style={styles.palavras_dropdown}>2: {palavras[1]}</Text>
                 <Text style={styles.palavras_dropdown}>3: {palavras[2]}</Text>
+                <Text style={styles.palavras_dropdown}>4: {palavras[3]}</Text>
+                <Text style={styles.palavras_dropdown}>5: {palavras[4]}</Text>
             </View>
         )}
     </View>
